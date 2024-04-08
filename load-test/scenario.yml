@@ -1,0 +1,48 @@
+config:
+  target: "http://localhost:9999"
+  phases:
+    - duration: 300
+      arrivalRate: 50
+  engines:
+    socketio-v3: {}
+  plugins:
+    publish-metrics:
+      - type: prometheus
+        port: 8091
+        pushgateway: "http://localhost:9090"
+        tags:
+          - "testId:mytest123"
+          - "type:loadtest"
+
+scenarios:
+  - name: Join room, send messages, and leave room
+    engine: socketio-v3
+    flow:
+      - think: 1
+
+      - namespace: "/wiki"
+        emit:
+          channel: "joinRoom"
+          data: 
+            namespaceId: 0
+            roomName: "New articles"
+
+      - think: 2 
+
+      - loop:
+          - emit:
+              - namespace: "/wiki"
+                channel: "newMessageToRoom"
+                data:
+                  newMessage: "{{ random(['Hello', 'Hi there', 'Hey everyone']) }}"
+                  selectedNsId: 0
+                  avatar: "{{ random(['https://via.placeholder.com/30', 'https://via.placeholder.com/40', 'https://via.placeholder.com/50']) }}" # Avatares aleatórios
+                  userName: "{{ random(['User1', 'User2', 'User3']) }}"
+          - think: "{{ random(2, 5) }}"
+
+
+      - emit:
+          - namespace: "/wiki"
+            channel: "disconnect"
+
+      - think: 2
