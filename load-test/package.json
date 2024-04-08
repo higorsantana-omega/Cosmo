@@ -1,0 +1,17 @@
+{
+  "name": "load-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "load": "artillery run scenario.yml",
+    "load2": "artillery run scenario2.yml"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "artillery": "^2.0.9",
+    "artillery-engine-socketio-v3": "^1.2.0"
+  }
+}
